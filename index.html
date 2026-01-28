@@ -10,7 +10,7 @@
     <title>Regis-Watt | 能量共鸣</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0d1117; color: #39d353; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; }
+        body { background-color: #0d1117; color: #39d353; font-family: sans-serif; overflow: hidden; }
         .glow { text-shadow: 0 0 15px #39d353; }
         .card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; backdrop-filter: blur(10px); }
         .energy-ball {
@@ -28,127 +28,121 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999; transition: opacity 0.8s ease;
         }
-        .splash-logo { width: 150px; height: 150px; border-radius: 50%; box-shadow: 0 0 40px rgba(57, 211, 83, 0.5); }
-        /* 数字跳动特效 */
-        .count-up { transition: all 0.5s ease; color: #fff; }
+        .splash-logo { width: 150px; height: 150px; border-radius: 50%; }
+        .voice-btn { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="regiswatt.jpg" alt="Logo" class="splash-logo">
+        <img src="regiswatt.jpg" class="splash-logo">
         <h1 class="text-white text-2xl font-bold mt-6 tracking-widest text-center">REGIS-WATT</h1>
-        <p class="text-green-500 text-xs mt-2 opacity-70 italic">Resonance Efficiency Grid...</p>
+        <p class="text-green-500 text-xs mt-2">正在初始化 AI 语音核心...</p>
     </div>
 
     <main id="main-content" class="p-6 max-w-md mx-auto opacity-0 transition-opacity duration-1000">
-        <div class="flex justify-between items-center mb-10 mt-4">
+        <div class="flex justify-between items-center mb-8 mt-4">
             <div class="flex items-center space-x-2">
                 <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
-                <span class="text-white font-bold tracking-tight text-sm">REGIS-WATT</span>
+                <span class="text-white font-bold tracking-tight text-sm uppercase">Regis-Watt</span>
             </div>
-            <span class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded animate-pulse">LIVE RESO: 92%</span>
+            <div id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">语音助手已就绪</div>
         </div>
 
-        <header class="text-center mb-10">
-            <h2 class="text-2xl font-bold text-white mb-1">你好，<span class="glow">零碳英雄</span></h2>
-            <p class="text-gray-500 text-sm italic">“让每一焦耳都有温度”</p>
-        </header>
-
         <div class="card p-10 flex flex-col items-center mb-6">
-            <p class="text-xs uppercase tracking-widest text-gray-500 mb-6 text-center">实时家庭功率</p>
-            <div class="energy-ball">
+            <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">实时能量共鸣</p>
+            <div class="energy-ball" onclick="startVoice()">
                 <div class="text-center">
-                    <span id="power-val" class="text-5xl font-black text-white glow">342</span>
+                    <span id="power-val" class="text-5xl font-black text-white glow">482</span>
                     <span class="text-xl text-green-500 ml-1">W</span>
                 </div>
             </div>
+            <p class="text-[9px] text-gray-500 mt-4">点击能量球开启语音指令</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="card p-4 text-center">
-                <p class="text-[10px] text-gray-500 uppercase mb-1">累计能量星 (ERS)</p>
-                <p class="text-xl font-bold"><span id="ers-val" class="count-up">12.50</span> <span class="text-xs text-green-500">E</span></p>
-            </div>
-            <div class="card p-4 text-center">
-                <p class="text-[10px] text-gray-500 uppercase mb-1">减碳贡献</p>
-                <p class="text-xl font-bold"><span id="co2-val" class="count-up">4.20</span> <span class="text-xs text-green-500">kg</span></p>
-            </div>
+        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
+            <div class="card py-4"><p class="text-[10px] text-gray-500 mb-1">能量星</p><p class="text-xl font-bold text-white" id="ers-val">12.50</p></div>
+            <div class="card py-4"><p class="text-[10px] text-gray-500 mb-1">减碳量</p><p class="text-xl font-bold text-white" id="co2-val">4.20</p></div>
         </div>
 
-        <button onclick="openShare()" class="w-full bg-green-500 hover:bg-green-400 text-black font-bold py-4 rounded-2xl transition shadow-lg active:scale-95 mb-4">
+        <button id="main-btn" onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl shadow-lg active:scale-95 mb-4">
             我要借用 / 分享资源
         </button>
 
-        <footer class="mt-12 text-center text-[9px] text-gray-600">
-            © 2026 REGIS-WATT DIGITAL TECH.<br>
-            <span class="opacity-30 uppercase tracking-tighter">Resonance Protocol Active</span>
-        </footer>
+        <p class="text-[10px] text-center text-gray-600">或者试着对我说：“我要借东西”</p>
     </main>
 
     <script>
-    // 1. 加载控制
+    // 语音合成（说话）
+    function speak(text) {
+        const msg = new SpeechSynthesisUtterance(text);
+        msg.lang = 'zh-CN';
+        window.speechSynthesis.speak(msg);
+    }
+
+    // 启动页与欢迎语
     window.addEventListener('load', () => {
         setTimeout(() => {
-            const splash = document.getElementById('splash');
-            const main = document.getElementById('main-content');
-            splash.style.opacity = '0';
+            document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
-                splash.style.display = 'none';
-                main.classList.remove('opacity-0');
-                main.classList.add('opacity-100');
+                document.getElementById('splash').style.display = 'none';
+                document.getElementById('main-content').classList.replace('opacity-0', 'opacity-100');
+                // 欢迎语
+                speak("欢迎来到Regis Watt，您今天的能量共鸣度非常完美。");
             }, 800);
         }, 2500);
     });
 
-    // 2. 功率跳动
-    setInterval(() => {
-        const el = document.getElementById('power-val');
-        if(!el) return;
-        let val = parseInt(el.innerText);
-        val += Math.floor(Math.random() * 21) - 10;
-        el.innerText = Math.max(50, Math.min(2000, val));
-    }, 2000);
+    // 语音识别（听话）
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'zh-CN';
+        
+        function startVoice() {
+            recognition.start();
+            document.getElementById('voice-status').innerText = "正在倾听...";
+            document.getElementById('voice-status').classList.add('bg-green-500/20');
+        }
 
-    // 3. 【新功能】能量星与碳指标实时慢速增长
+        recognition.onresult = (event) => {
+            const command = event.results[0][0].transcript;
+            document.getElementById('voice-status').innerText = "识别到：" + command;
+            if (command.includes("借") || command.includes("资源")) {
+                speak("好的，正在为您扫描邻居的资源");
+                openShare();
+            }
+        };
+        
+        recognition.onend = () => {
+            document.getElementById('voice-status').classList.remove('bg-green-500/20');
+            setTimeout(() => document.getElementById('voice-status').innerText = "语音助手已就绪", 2000);
+        };
+    }
+
+    // 模拟数据增长
     setInterval(() => {
-        const ersEl = document.getElementById('ers-val');
-        const co2El = document.getElementById('co2-val');
-        
-        let ers = parseFloat(ersEl.innerText);
-        let co2 = parseFloat(co2El.innerText);
-        
-        // 模拟每隔几秒增加 0.01 的收益
-        ersEl.innerText = (ers + 0.01).toFixed(2);
-        co2El.innerText = (co2 + 0.005).toFixed(3);
-        
-        // 增加一个微小的闪烁效果，提醒用户有增长
-        ersEl.classList.add('text-green-400');
-        setTimeout(() => ersEl.classList.remove('text-green-400'), 500);
+        const ers = document.getElementById('ers-val');
+        ers.innerText = (parseFloat(ers.innerText) + 0.01).toFixed(2);
     }, 5000);
 
-    // 4. 资源匹配
+    // 资源页面
     function openShare() {
         const overlay = document.createElement('div');
         overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;";
         overlay.innerHTML = `
             <div id="searching" class="text-center">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mb-6 mx-auto"></div>
-                <p class="text-green-500 glow tracking-widest text-sm">正在检索共鸣节点...</p>
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-green-500 mb-6 mx-auto"></div>
+                <p class="text-green-500 text-sm">正在检索邻里节点...</p>
             </div>
-            <div id="results" class="hidden w-full max-w-sm">
-                <h3 class="text-white font-bold mb-6 text-center text-lg">邻里互助资源</h3>
-                <div class="space-y-4">
-                    <div class="card p-4 flex justify-between items-center">
-                        <span class="text-white text-sm">🛠️ 冲击钻 (距离 200m)</span>
-                        <button onclick="alert('共鸣申请已发送！邻居确认后将通知您')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
-                    </div>
-                    <div class="card p-4 flex justify-between items-center">
-                        <span class="text-white text-sm">🔋 户外电源 (距离 50m)</span>
-                        <button onclick="alert('共鸣申请已发送！邻居确认后将通知您')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
-                    </div>
+            <div id="results" class="hidden w-full max-w-sm text-center">
+                <h3 class="text-white font-bold mb-6">发现邻里资源</h3>
+                <div class="card p-4 flex justify-between items-center mb-4">
+                    <span class="text-white text-sm">🛠️ 冲击钻 (王阿姨)</span>
+                    <button onclick="requestItem('冲击钻')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="w-full mt-12 text-gray-500 text-xs py-3 rounded-xl uppercase tracking-widest border border-gray-800">返回</button>
+                <button onclick="this.parentElement.parentElement.remove()" class="mt-8 text-gray-500 text-xs">返回</button>
             </div>
         `;
         document.body.appendChild(overlay);
@@ -156,6 +150,14 @@
             document.getElementById('searching').classList.add('hidden');
             document.getElementById('results').classList.remove('hidden');
         }, 1500);
+    }
+
+    function requestItem(item) {
+        speak("申请已发送，正在等待邻居确认");
+        setTimeout(() => {
+            speak("叮！邻居王阿姨同意了您的申请，请在下午两点后去三零二室取件。");
+            alert("【通知】王阿姨：没问题，你直接过来拿吧！");
+        }, 3000);
     }
     </script>
 </body>
