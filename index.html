@@ -92,27 +92,69 @@
     </main>
 
     <script>
-        // 控制启动页消失
-        window.addEventListener('load', () => {
+        <script>
+    // 1. 控制启动页
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+            const main = document.getElementById('main-content');
+            splash.style.opacity = '0';
             setTimeout(() => {
-                const splash = document.getElementById('splash');
-                const main = document.getElementById('main-content');
-                splash.style.opacity = '0';
-                setTimeout(() => {
-                    splash.style.display = 'none';
-                    main.classList.remove('opacity-0');
-                    main.classList.add('opacity-100');
-                }, 800);
-            }, 2500); // 启动页展示2.5秒
-        });
+                splash.style.display = 'none';
+                main.classList.remove('opacity-0');
+                main.classList.add('opacity-100');
+            }, 800);
+        }, 2500);
+    });
 
-        // 模拟功率实时跳动
-        setInterval(() => {
-            const el = document.getElementById('power-val');
-            let val = parseInt(el.innerText);
-            val += Math.floor(Math.random() * 21) - 10; // 随机加减10
-            el.innerText = Math.max(50, Math.min(2000, val));
+    // 2. 模拟功率实时跳动
+    setInterval(() => {
+        const el = document.getElementById('power-val');
+        let val = parseInt(el.innerText);
+        val += Math.floor(Math.random() * 21) - 10;
+        el.innerText = Math.max(50, Math.min(2000, val));
+    }, 2000);
+
+    // 3. 【新增】资源匹配逻辑
+    function openShare() {
+        // 创建一个酷炫的半透明遮罩层
+        const overlay = document.createElement('div');
+        overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.95); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; transition:all 0.5s;";
+        
+        // 插入搜索动画
+        overlay.innerHTML = `
+            <div id="searching">
+                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mb-4"></div>
+                <p class="text-green-500 glow">AI 正在扫描邻里共鸣节点...</p>
+            </div>
+            <div id="results" class="hidden w-full max-w-sm">
+                <h3 class="text-white font-bold mb-4 text-center">为您找到以下空闲资源：</h3>
+                <div class="space-y-3">
+                    <div class="card p-3 flex justify-between items-center">
+                        <span class="text-white text-sm">🛠️ 冲击钻 (距离 200m)</span>
+                        <button onclick="openShare()" class="...">
+                    </div>
+                    <div class="card p-3 flex justify-between items-center">
+                        <span class="text-white text-sm">🔋 户外电源 (距离 50m)</span>
+                        <button class="bg-green-500 text-black text-xs px-3 py-1 rounded">借用</button>
+                    </div>
+                    <div class="card p-3 flex justify-between items-center opacity-50">
+                        <span class="text-white text-sm">🚲 折叠自行车 (被借出)</span>
+                        <span class="text-xs text-gray-500 italic">2小时后空闲</span>
+                    </div>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="w-full mt-8 text-gray-500 text-sm">返回</button>
+            </div>
+        `;
+        
+        document.body.appendChild(overlay);
+
+        // 模拟搜索 2 秒后展示结果
+        setTimeout(() => {
+            document.getElementById('searching').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
         }, 2000);
-    </script>
+    }
+</script>
 </body>
 </html>
