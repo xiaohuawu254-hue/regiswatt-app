@@ -42,7 +42,7 @@
 
     <div id="splash">
         <img src="regiswatt.jpg" alt="Logo" class="splash-logo">
-        <h1 class="text-white text-2xl font-bold mt-6 tracking-widest">REGIS-WATT</h1>
+        <h1 class="text-white text-2xl font-bold mt-6 tracking-widest text-center">REGIS-WATT</h1>
         <p class="text-green-500 text-xs mt-2 opacity-70">正在建立共鸣连接...</p>
     </div>
 
@@ -50,7 +50,7 @@
         <div class="flex justify-between items-center mb-10 mt-4">
             <div class="flex items-center space-x-2">
                 <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
-                <span class="text-white font-bold tracking-tight">REGIS-WATT</span>
+                <span class="text-white font-bold tracking-tight text-sm">REGIS-WATT</span>
             </div>
             <span class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">2026 试点版</span>
         </div>
@@ -61,7 +61,7 @@
         </header>
 
         <div class="card p-10 flex flex-col items-center mb-6">
-            <p class="text-xs uppercase tracking-widest text-gray-500 mb-6">实时家庭功率</p>
+            <p class="text-xs uppercase tracking-widest text-gray-500 mb-6 text-center">实时家庭功率</p>
             <div class="energy-ball">
                 <div class="text-center">
                     <span id="power-val" class="text-5xl font-black text-white glow">342</span>
@@ -72,16 +72,16 @@
 
         <div class="grid grid-cols-2 gap-4 mb-8">
             <div class="card p-4 text-center">
-                <p class="text-[10px] text-gray-500 uppercase">累计能量星</p>
+                <p class="text-[10px] text-gray-500 uppercase mb-1">累计能量星</p>
                 <p class="text-xl font-bold text-white">12.5 <span class="text-xs text-green-500">E</span></p>
             </div>
             <div class="card p-4 text-center">
-                <p class="text-[10px] text-gray-500 uppercase">减碳贡献</p>
+                <p class="text-[10px] text-gray-500 uppercase mb-1">减碳贡献</p>
                 <p class="text-xl font-bold text-white">4.2 <span class="text-xs text-green-500">kg</span></p>
             </div>
         </div>
 
-        <button onclick="alert('正在为您匹配社区空闲资源...')" class="w-full bg-green-500 hover:bg-green-400 text-black font-bold py-4 rounded-2xl transition shadow-lg active:scale-95 mb-4">
+        <button onclick="openShare()" class="w-full bg-green-500 hover:bg-green-400 text-black font-bold py-4 rounded-2xl transition shadow-lg active:scale-95 mb-4">
             我要借用 / 分享资源
         </button>
 
@@ -92,7 +92,6 @@
     </main>
 
     <script>
-        <script>
     // 1. 控制启动页
     window.addEventListener('load', () => {
         setTimeout(() => {
@@ -110,51 +109,53 @@
     // 2. 模拟功率实时跳动
     setInterval(() => {
         const el = document.getElementById('power-val');
+        if(!el) return;
         let val = parseInt(el.innerText);
         val += Math.floor(Math.random() * 21) - 10;
         el.innerText = Math.max(50, Math.min(2000, val));
     }, 2000);
 
-    // 3. 【新增】资源匹配逻辑
+    // 3. 资源匹配逻辑
     function openShare() {
-        // 创建一个酷炫的半透明遮罩层
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.95); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; transition:all 0.5s;";
+        overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; transition:all 0.5s;";
         
-        // 插入搜索动画
         overlay.innerHTML = `
-            <div id="searching">
-                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mb-4"></div>
-                <p class="text-green-500 glow">AI 正在扫描邻里共鸣节点...</p>
+            <div id="searching" class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-green-500 mb-6 mx-auto"></div>
+                <p class="text-green-500 glow tracking-widest text-sm">AI 正在扫描邻里共鸣节点...</p>
             </div>
             <div id="results" class="hidden w-full max-w-sm">
-                <h3 class="text-white font-bold mb-4 text-center">为您找到以下空闲资源：</h3>
-                <div class="space-y-3">
-                    <div class="card p-3 flex justify-between items-center">
+                <h3 class="text-white font-bold mb-6 text-center text-lg">发现邻里资源</h3>
+                <div class="space-y-4">
+                    <div class="card p-4 flex justify-between items-center">
                         <span class="text-white text-sm">🛠️ 冲击钻 (距离 200m)</span>
-                        <button onclick="openShare()" class="...">
+                        <button onclick="alert('申请已发送！邻居会通过 App 与您联系')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
                     </div>
-                    <div class="card p-3 flex justify-between items-center">
+                    <div class="card p-4 flex justify-between items-center">
                         <span class="text-white text-sm">🔋 户外电源 (距离 50m)</span>
-                        <button class="bg-green-500 text-black text-xs px-3 py-1 rounded">借用</button>
+                        <button onclick="alert('申请已发送！邻居会通过 App 与您联系')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
                     </div>
-                    <div class="card p-3 flex justify-between items-center opacity-50">
+                    <div class="card p-4 flex justify-between items-center opacity-40">
                         <span class="text-white text-sm">🚲 折叠自行车 (被借出)</span>
-                        <span class="text-xs text-gray-500 italic">2小时后空闲</span>
+                        <span class="text-[10px] text-gray-500 italic">2h 后回归</span>
                     </div>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="w-full mt-8 text-gray-500 text-sm">返回</button>
+                <button onclick="this.parentElement.parentElement.remove()" class="w-full mt-12 text-gray-500 text-xs border border-gray-800 py-3 rounded-xl uppercase tracking-widest">返回主屏</button>
             </div>
         `;
         
         document.body.appendChild(overlay);
 
-        // 模拟搜索 2 秒后展示结果
         setTimeout(() => {
-            document.getElementById('searching').classList.add('hidden');
-            document.getElementById('results').classList.remove('hidden');
+            const s = document.getElementById('searching');
+            const r = document.getElementById('results');
+            if(s && r) {
+                s.classList.add('hidden');
+                r.classList.remove('hidden');
+            }
         }, 2000);
     }
-</script>
+    </script>
 </body>
 </html>
