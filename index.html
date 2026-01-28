@@ -5,159 +5,154 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Regis-Watt">
     <link rel="apple-touch-icon" href="regiswatt.jpg">
     <title>Regis-Watt | 能量共鸣</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0d1117; color: #39d353; font-family: sans-serif; overflow: hidden; }
+        body { background-color: #0d1117; color: #39d353; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
         .glow { text-shadow: 0 0 15px #39d353; }
         .card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; backdrop-filter: blur(10px); }
         .energy-ball {
-            width: 220px; height: 220px; border-radius: 50%;
+            width: 200px; height: 200px; border-radius: 50%;
             border: 2px solid #39d353; box-shadow: 0 0 30px rgba(57, 211, 83, 0.4);
             display: flex; justify-content: center; align-items: center;
             animation: breathe 3s infinite ease-in-out;
         }
         @keyframes breathe {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(57, 211, 83, 0.3); }
-            50% { transform: scale(1.05); box-shadow: 0 0 45px rgba(57, 211, 83, 0.6); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
         #splash {
             position: fixed; inset: 0; background: #0d1117;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 9999; transition: opacity 0.8s ease;
         }
-        .splash-logo { width: 150px; height: 150px; border-radius: 50%; }
-        .voice-btn { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        #activate-btn {
+            position: fixed; inset: 0; z-index: 9998;
+            background: rgba(13, 17, 23, 0.95);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="regiswatt.jpg" class="splash-logo">
-        <h1 class="text-white text-2xl font-bold mt-6 tracking-widest text-center">REGIS-WATT</h1>
-        <p class="text-green-500 text-xs mt-2">正在初始化 AI 语音核心...</p>
+        <img src="regiswatt.jpg" class="w-32 h-32 rounded-full mb-6">
+        <h1 class="text-white text-2xl font-bold tracking-widest">REGIS-WATT</h1>
     </div>
 
-    <main id="main-content" class="p-6 max-w-md mx-auto opacity-0 transition-opacity duration-1000">
-        <div class="flex justify-between items-center mb-8 mt-4">
-            <div class="flex items-center space-x-2">
-                <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
-                <span class="text-white font-bold tracking-tight text-sm uppercase">Regis-Watt</span>
-            </div>
-            <div id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">语音助手已就绪</div>
+    <div id="activate-btn">
+        <button onclick="initAI()" class="bg-green-500 text-black font-extrabold px-8 py-6 rounded-full text-xl shadow-[0_0_30px_#39d353] active:scale-95">
+            ✨ 开启元气助手
+        </button>
+        <p class="text-gray-400 mt-6 text-sm italic">点击这里，和我一起守护社区吧！</p>
+    </div>
+
+    <main id="main-content" class="p-6 max-w-md mx-auto hidden opacity-0 transition-opacity duration-1000">
+        <div class="flex justify-between items-center mb-6 mt-4">
+            <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
+            <div id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">元气助手运行中</div>
         </div>
 
-        <div class="card p-10 flex flex-col items-center mb-6">
-            <p class="text-[10px] uppercase tracking-widest text-gray-500 mb-4">实时能量共鸣</p>
-            <div class="energy-ball" onclick="startVoice()">
+        <div class="card p-8 flex flex-col items-center mb-6">
+            <div class="energy-ball" onclick="startListening()">
                 <div class="text-center">
                     <span id="power-val" class="text-5xl font-black text-white glow">482</span>
                     <span class="text-xl text-green-500 ml-1">W</span>
                 </div>
             </div>
-            <p class="text-[9px] text-gray-500 mt-4">点击能量球开启语音指令</p>
+            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-widest">点我跟我说话呀</p>
         </div>
 
-        <div class="grid grid-cols-2 gap-4 mb-6 text-center">
-            <div class="card py-4"><p class="text-[10px] text-gray-500 mb-1">能量星</p><p class="text-xl font-bold text-white" id="ers-val">12.50</p></div>
-            <div class="card py-4"><p class="text-[10px] text-gray-500 mb-1">减碳量</p><p class="text-xl font-bold text-white" id="co2-val">4.20</p></div>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">能量星</p><p class="text-xl font-bold text-white" id="ers-val">12.50</p></div>
+            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">减碳量</p><p class="text-xl font-bold text-white" id="co2-val">4.20</p></div>
         </div>
 
-        <button id="main-btn" onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl shadow-lg active:scale-95 mb-4">
-            我要借用 / 分享资源
-        </button>
-
-        <p class="text-[10px] text-center text-gray-600">或者试着对我说：“我要借东西”</p>
+        <button onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl mb-4">看看邻居在分享什么</button>
     </main>
 
     <script>
-    // 语音合成（说话）
+    let synth = window.speechSynthesis;
+    let recognition;
+
+    // 核心语音参数调整：模拟小女孩声音
     function speak(text) {
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
-        window.speechSynthesis.speak(msg);
+        msg.pitch = 1.6;  // 提高音高（0-2，1.6听起来更清脆、年轻）
+        msg.rate = 1.2;   // 稍微加快语速，显得更有活力
+        msg.volume = 1.0;
+        synth.speak(msg);
     }
 
-    // 启动页与欢迎语
+    function initAI() {
+        // 解锁声音并播放更人性化的欢迎语
+        speak("你好呀！我是你的能量小管家，今天也要一起加油保护地球哦！");
+
+        document.getElementById('activate-btn').style.display = 'none';
+        const main = document.getElementById('main-content');
+        main.classList.remove('hidden');
+        setTimeout(() => main.classList.add('opacity-100'), 50);
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecognition) {
+            recognition = new SpeechRecognition();
+            recognition.lang = 'zh-CN';
+            recognition.onresult = (e) => {
+                const cmd = e.results[0][0].transcript;
+                if(cmd.includes("借")) {
+                    speak("好哒！马上为你找找看邻居们分享了什么好东西。");
+                    openShare();
+                }
+            };
+        }
+    }
+
+    function startListening() {
+        if(recognition) {
+            recognition.start();
+            document.getElementById('voice-status').innerText = "在听哦...";
+        }
+    }
+
     window.addEventListener('load', () => {
         setTimeout(() => {
             document.getElementById('splash').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('splash').style.display = 'none';
-                document.getElementById('main-content').classList.replace('opacity-0', 'opacity-100');
-                // 欢迎语
-                speak("欢迎来到Regis Watt，您今天的能量共鸣度非常完美。");
+                document.getElementById('activate-btn').style.display = 'flex';
             }, 800);
-        }, 2500);
+        }, 2000);
     });
 
-    // 语音识别（听话）
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'zh-CN';
-        
-        function startVoice() {
-            recognition.start();
-            document.getElementById('voice-status').innerText = "正在倾听...";
-            document.getElementById('voice-status').classList.add('bg-green-500/20');
-        }
-
-        recognition.onresult = (event) => {
-            const command = event.results[0][0].transcript;
-            document.getElementById('voice-status').innerText = "识别到：" + command;
-            if (command.includes("借") || command.includes("资源")) {
-                speak("好的，正在为您扫描邻居的资源");
-                openShare();
-            }
-        };
-        
-        recognition.onend = () => {
-            document.getElementById('voice-status').classList.remove('bg-green-500/20');
-            setTimeout(() => document.getElementById('voice-status').innerText = "语音助手已就绪", 2000);
-        };
-    }
-
-    // 模拟数据增长
     setInterval(() => {
-        const ers = document.getElementById('ers-val');
-        ers.innerText = (parseFloat(ers.innerText) + 0.01).toFixed(2);
-    }, 5000);
+        const el = document.getElementById('power-val');
+        if(el) el.innerText = (parseInt(el.innerText) + Math.floor(Math.random()*11-5));
+    }, 2000);
 
-    // 资源页面
     function openShare() {
         const overlay = document.createElement('div');
         overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;";
         overlay.innerHTML = `
-            <div id="searching" class="text-center">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-green-500 mb-6 mx-auto"></div>
-                <p class="text-green-500 text-sm">正在检索邻里节点...</p>
-            </div>
-            <div id="results" class="hidden w-full max-w-sm text-center">
-                <h3 class="text-white font-bold mb-6">发现邻里资源</h3>
-                <div class="card p-4 flex justify-between items-center mb-4">
-                    <span class="text-white text-sm">🛠️ 冲击钻 (王阿姨)</span>
-                    <button onclick="requestItem('冲击钻')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
+            <div class="card p-6 w-full max-w-sm text-center">
+                <h3 class="text-white font-bold mb-4 text-lg text-green-500">发现宝藏资源啦</h3>
+                <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl mb-4">
+                    <span class="text-sm text-white">🛠️ 冲击钻 (王阿姨)</span>
+                    <button onclick="requestDone()" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="mt-8 text-gray-500 text-xs">返回</button>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 text-xs mt-4">关掉这个窗口</button>
             </div>
         `;
         document.body.appendChild(overlay);
-        setTimeout(() => {
-            document.getElementById('searching').classList.add('hidden');
-            document.getElementById('results').classList.remove('hidden');
-        }, 1500);
     }
 
-    function requestItem(item) {
-        speak("申请已发送，正在等待邻居确认");
+    function requestDone() {
+        speak("呼叫邻居王阿姨中，请稍等一下下。");
         setTimeout(() => {
-            speak("叮！邻居王阿姨同意了您的申请，请在下午两点后去三零二室取件。");
-            alert("【通知】王阿姨：没问题，你直接过来拿吧！");
-        }, 3000);
+            speak("太棒啦！王阿姨说可以借给你哦，记得要有礼貌地去拿呀！");
+            alert("王阿姨：没问题，下午来拿！");
+        }, 2000);
     }
     </script>
 </body>
