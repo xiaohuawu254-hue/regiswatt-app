@@ -36,22 +36,27 @@
 </head>
 <body>
 
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3" type="audio/mpeg">
+    </audio>
+
     <div id="splash">
-        <img src="regiswatt.jpg" class="w-32 h-32 rounded-full mb-6">
-        <h1 class="text-white text-2xl font-bold tracking-widest">REGIS-WATT</h1>
+        <img src="regiswatt.jpg" class="w-32 h-32 rounded-full mb-6 shadow-[0_0_50px_rgba(57,211,83,0.5)]">
+        <h1 class="text-white text-2xl font-bold tracking-widest uppercase">Regis-Watt</h1>
+        <p class="text-green-500 text-xs mt-2 animate-pulse">正在加载能量生态...</p>
     </div>
 
     <div id="activate-btn">
-        <button onclick="initAI()" class="bg-green-500 text-black font-extrabold px-8 py-6 rounded-full text-xl shadow-[0_0_30px_#39d353] active:scale-95">
-            ✨ 开启元气助手
+        <button onclick="initAI()" class="bg-green-500 text-black font-extrabold px-10 py-6 rounded-full text-xl shadow-[0_0_30px_#39d353] active:scale-95 transition-all">
+            ✨ 激活元气空间
         </button>
-        <p class="text-gray-400 mt-6 text-sm italic">点击这里，和我一起守护社区吧！</p>
+        <p class="text-gray-400 mt-6 text-sm italic">点这里，和我一起开启共鸣时刻！</p>
     </div>
 
     <main id="main-content" class="p-6 max-w-md mx-auto hidden opacity-0 transition-opacity duration-1000">
         <div class="flex justify-between items-center mb-6 mt-4">
             <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
-            <div id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">元气助手运行中</div>
+            <div onclick="toggleMusic()" id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded cursor-pointer">🎵 音乐播报中</div>
         </div>
 
         <div class="card p-8 flex flex-col items-center mb-6">
@@ -61,40 +66,60 @@
                     <span class="text-xl text-green-500 ml-1">W</span>
                 </div>
             </div>
-            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-widest">点我跟我说话呀</p>
+            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-widest">跟我说话吧！</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">能量星</p><p class="text-xl font-bold text-white" id="ers-val">12.50</p></div>
-            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">减碳量</p><p class="text-xl font-bold text-white" id="co2-val">4.20</p></div>
+            <div class="card py-4 text-center">
+                <p class="text-[10px] text-gray-500 mb-1">能量星</p>
+                <p class="text-xl font-bold text-white"><span id="ers-val">12.50</span> <span class="text-xs text-green-500">E</span></p>
+            </div>
+            <div class="card py-4 text-center">
+                <p class="text-[10px] text-gray-500 mb-1">减碳量</p>
+                <p class="text-xl font-bold text-white"><span id="co2-val">4.20</span> <span class="text-xs text-green-500">kg</span></p>
+            </div>
         </div>
 
-        <button onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl mb-4">看看邻居在分享什么</button>
+        <button onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl mb-4 shadow-lg shadow-green-500/20 active:scale-95 transition-all">
+            看看邻居在分享什么
+        </button>
+        
+        <footer class="mt-8 text-center">
+            <p class="text-[8px] text-gray-600 uppercase tracking-widest">Resonance Protocol v1.7</p>
+        </footer>
     </main>
 
     <script>
     let synth = window.speechSynthesis;
     let recognition;
+    let bgMusic = document.getElementById('bg-music');
 
-    // 核心语音参数调整：模拟小女孩声音
     function speak(text) {
+        // 说话时稍微调低背景音乐，增强清晰度（Ducking效果）
+        bgMusic.volume = 0.2;
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
-        msg.pitch = 1.6;  // 提高音高（0-2，1.6听起来更清脆、年轻）
-        msg.rate = 1.2;   // 稍微加快语速，显得更有活力
-        msg.volume = 1.0;
+        msg.pitch = 1.6;
+        msg.rate = 1.1;
+        msg.onend = () => { bgMusic.volume = 0.5; }; // 说完恢复音量
         synth.speak(msg);
     }
 
     function initAI() {
-        // 解锁声音并播放更人性化的欢迎语
-        speak("你好呀！我是你的能量小管家，今天也要一起加油保护地球哦！");
+        // 1. 播放背景音乐
+        bgMusic.volume = 0.5;
+        bgMusic.play();
 
+        // 2. 语音问好
+        speak("好哒！元气助手上线啦。背景音乐已开启，让我们开始愉快的一天吧！");
+
+        // 界面切换
         document.getElementById('activate-btn').style.display = 'none';
         const main = document.getElementById('main-content');
         main.classList.remove('hidden');
         setTimeout(() => main.classList.add('opacity-100'), 50);
 
+        // 语音识别初始化
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
             recognition = new SpeechRecognition();
@@ -102,17 +127,27 @@
             recognition.onresult = (e) => {
                 const cmd = e.results[0][0].transcript;
                 if(cmd.includes("借")) {
-                    speak("好哒！马上为你找找看邻居们分享了什么好东西。");
+                    speak("没问题！正在为你扫描周围的共鸣节点，请稍等哦。");
                     openShare();
                 }
             };
         }
     }
 
+    function toggleMusic() {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            document.getElementById('voice-status').innerText = "🎵 音乐播报中";
+        } else {
+            bgMusic.pause();
+            document.getElementById('voice-status').innerText = "🔇 音乐已暂停";
+        }
+    }
+
     function startListening() {
         if(recognition) {
             recognition.start();
-            document.getElementById('voice-status').innerText = "在听哦...";
+            document.getElementById('voice-status').innerText = "正在听哦...";
         }
     }
 
@@ -129,6 +164,8 @@
     setInterval(() => {
         const el = document.getElementById('power-val');
         if(el) el.innerText = (parseInt(el.innerText) + Math.floor(Math.random()*11-5));
+        const ers = document.getElementById('ers-val');
+        ers.innerText = (parseFloat(ers.innerText) + 0.01).toFixed(2);
     }, 2000);
 
     function openShare() {
@@ -136,23 +173,20 @@
         overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;";
         overlay.innerHTML = `
             <div class="card p-6 w-full max-w-sm text-center">
-                <h3 class="text-white font-bold mb-4 text-lg text-green-500">发现宝藏资源啦</h3>
-                <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl mb-4">
+                <h3 class="text-white font-bold mb-4 text-lg text-green-500 tracking-wider">共鸣资源库</h3>
+                <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl mb-4 border border-white/10">
                     <span class="text-sm text-white">🛠️ 冲击钻 (王阿姨)</span>
                     <button onclick="requestDone()" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">借用</button>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 text-xs mt-4">关掉这个窗口</button>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 text-[10px] mt-4 uppercase tracking-widest">返回主界面</button>
             </div>
         `;
         document.body.appendChild(overlay);
     }
 
     function requestDone() {
-        speak("呼叫邻居王阿姨中，请稍等一下下。");
-        setTimeout(() => {
-            speak("太棒啦！王阿姨说可以借给你哦，记得要有礼貌地去拿呀！");
-            alert("王阿姨：没问题，下午来拿！");
-        }, 2000);
+        speak("呼叫邻居王阿姨中... 请稍等... 叮咚！王阿姨同意啦！她就在三零二室等你哦！");
+        alert("王阿姨：没问题，下午来拿！");
     }
     </script>
 </body>
