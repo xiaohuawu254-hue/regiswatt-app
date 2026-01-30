@@ -6,10 +6,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="regiswatt.jpg">
-    <title>Regis-Watt | 能量共鸣</title>
+    <title>瑞瓦 REWA | 能量共鸣</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0d1117; color: #39d353; font-family: sans-serif; overflow: hidden; touch-action: manipulation; }
+        body { background-color: #0d1117; color: #39d353; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; overflow: hidden; touch-action: manipulation; }
         .glow { text-shadow: 0 0 15px #39d353; }
         .card { background: rgba(22, 27, 34, 0.9); border: 1px solid #30363d; border-radius: 20px; backdrop-filter: blur(10px); }
         .energy-ball {
@@ -17,6 +17,7 @@
             border: 2px solid #39d353; box-shadow: 0 0 30px rgba(57, 211, 83, 0.4);
             display: flex; justify-content: center; align-items: center;
             animation: breathe 3s infinite ease-in-out;
+            cursor: pointer;
         }
         @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         #splash { position: fixed; inset: 0; background: #0d1117; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease; }
@@ -24,42 +25,51 @@
         .chat-msg { max-width: 80%; padding: 10px 15px; border-radius: 15px; margin-bottom: 10px; font-size: 14px; line-height: 1.4; }
         .msg-neighbor { background: #30363d; color: white; align-self: flex-start; border-bottom-left-radius: 2px; }
         .msg-me { background: #39d353; color: black; align-self: flex-end; border-bottom-right-radius: 2px; font-weight: bold; }
+        .img-placeholder { background: linear-gradient(135deg, #39d353, #1e293b); border-radius: 50%; }
     </style>
 </head>
 <body>
 
     <div id="splash">
-        <img src="regiswatt.jpg" class="w-32 h-32 rounded-full mb-6 shadow-[0_0_50px_rgba(57,211,83,0.5)]">
-        <h1 class="text-white text-2xl font-bold tracking-widest uppercase text-center">Regis-Watt</h1>
+        <div class="w-32 h-32 rounded-full mb-6 shadow-[0_0_50px_rgba(57,211,83,0.5)] overflow-hidden">
+            <img src="regiswatt.jpg" onerror="this.parentElement.classList.add('img-placeholder'); this.style.display='none'" class="w-full h-full object-cover">
+        </div>
+        <h1 class="text-white text-3xl font-bold tracking-[0.2em] text-center mb-2">瑞瓦</h1>
+        <p class="text-green-500 text-xs tracking-widest uppercase opacity-70">REWA Resonance</p>
     </div>
 
     <div id="activate-btn">
-        <button onclick="initAI()" class="bg-green-500 text-black font-extrabold px-10 py-6 rounded-full text-xl shadow-[0_0_30px_#39d353] active:scale-95">✨ 开启元气助手</button>
-        <p class="text-gray-400 mt-6 text-sm">点击开启语音交互功能</p>
+        <button onclick="initAI()" class="bg-green-500 text-black font-extrabold px-10 py-6 rounded-full text-xl shadow-[0_0_30px_#39d353] active:scale-95 transition-transform">✨ 开启元气助手</button>
+        <p class="text-gray-400 mt-6 text-sm">好电如空气，瑞瓦启共鸣。</p>
     </div>
 
     <main id="main-content" class="p-6 max-w-md mx-auto hidden opacity-0 transition-opacity duration-1000">
         <div class="flex justify-between items-center mb-6 mt-4">
-            <img src="regiswatt.jpg" class="w-10 h-10 rounded-full border border-green-500">
+            <div class="w-10 h-10 rounded-full border border-green-500 overflow-hidden">
+                <img src="regiswatt.jpg" onerror="this.parentElement.classList.add('img-placeholder'); this.style.display='none'" class="w-full h-full object-cover">
+            </div>
             <div id="voice-status" class="text-[10px] text-green-400 border border-green-500/30 px-2 py-1 rounded">语音管家在线</div>
         </div>
 
-        <div class="card p-6 flex flex-col items-center mb-6">
+        <div class="card p-6 flex flex-col items-center mb-6 text-center">
+            <h2 class="text-white font-bold mb-1">瑞瓦 REWA</h2>
+            <p class="text-[10px] text-gray-500 mb-6 italic">“好电如空气，瑞瓦启共鸣”</p>
+            
             <div class="energy-ball" onclick="startListening()">
                 <div class="text-center">
                     <span id="power-val" class="text-5xl font-black text-white glow">482</span>
                     <span class="text-xl text-green-500 ml-1">W</span>
                 </div>
             </div>
-            <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-widest">点击球体语音借物</p>
+            <p class="text-[10px] text-gray-500 mt-6 uppercase tracking-[0.3em]">点击球体 · 开启共鸣</p>
         </div>
 
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">能量星</p><p class="text-xl font-bold text-white"><span id="ers-val">12.50</span> E</p></div>
-            <div class="card py-4 text-center"><p class="text-[10px] text-gray-500 mb-1">减碳量</p><p class="text-xl font-bold text-white"><span id="co2-val">4.20</span> kg</p></div>
+            <div class="card py-4 text-center"><p class="text-[10px] text-gray-400 mb-1 uppercase">能量星 E-Stars</p><p class="text-xl font-bold text-white"><span id="ers-val">12.50</span> E</p></div>
+            <div class="card py-4 text-center"><p class="text-[10px] text-gray-400 mb-1 uppercase">减碳量 CO2</p><p class="text-xl font-bold text-white"><span id="co2-val">4.20</span> kg</p></div>
         </div>
 
-        <button onclick="openShare()" class="w-full bg-green-500 text-black font-bold py-4 rounded-2xl mb-4 shadow-lg active:scale-95">
+        <button onclick="openShare()" class="w-full bg-green-500 text-black font-extrabold py-4 rounded-2xl mb-4 shadow-lg active:scale-95 transition-all">
             发现邻里资源
         </button>
     </main>
@@ -69,7 +79,7 @@
             <button onclick="closeChat()" class="text-green-500 mr-4 text-xl font-bold">←</button>
             <div>
                 <h3 id="chat-title" class="text-white font-bold text-lg">正在连接...</h3>
-                <p class="text-[10px] text-green-500 animate-pulse uppercase">Secure Resonance Link</p>
+                <p class="text-[10px] text-green-500 animate-pulse uppercase">REWA Secure Link</p>
             </div>
         </div>
         <div id="chat-box" class="flex-1 overflow-y-auto flex flex-col mb-4"></div>
@@ -83,15 +93,16 @@
     let recognition;
 
     function speak(text) {
+        if (!synth) return;
         const msg = new SpeechSynthesisUtterance(text);
         msg.lang = 'zh-CN';
-        msg.pitch = 1.6;
-        msg.rate = 1.1;
+        msg.pitch = 1.4;
+        msg.rate = 1.0;
         synth.speak(msg);
     }
 
     function initAI() {
-        speak("好哒！元气助手上线啦。有什么我可以帮你的吗？");
+        speak("欢迎使用瑞瓦。好电如空气，我已准备好为你开启共鸣。");
         document.getElementById('activate-btn').style.display = 'none';
         const main = document.getElementById('main-content');
         main.classList.remove('hidden');
@@ -104,17 +115,24 @@
             recognition.onresult = (e) => {
                 const cmd = e.results[0][0].transcript;
                 if(cmd.includes("借")) {
-                    speak("没问题！帮你找找看邻居分享了什么。");
+                    speak("收到！正在为您检索邻里共享资源。");
                     openShare();
                 }
+            };
+            recognition.onend = () => {
+                document.getElementById('voice-status').innerText = "语音管家在线";
             };
         }
     }
 
     function startListening() {
         if(recognition) {
-            recognition.start();
-            document.getElementById('voice-status').innerText = "在听哦...";
+            try {
+                recognition.start();
+                document.getElementById('voice-status').innerText = "正在倾听...";
+            } catch(e) { console.log("Listening already started"); }
+        } else {
+            speak("您的浏览器暂不支持语音识别，请点击按钮操作。");
         }
     }
 
@@ -123,35 +141,39 @@
         overlay.id = "resource-overlay";
         overlay.style = "position:fixed; inset:0; background:rgba(13,17,23,0.98); z-index:10000; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px;";
         overlay.innerHTML = `
-            <div class="card p-6 w-full max-w-sm text-center">
-                <h3 class="text-white font-bold mb-4 text-green-500">共鸣清单</h3>
+            <div class="card p-6 w-full max-w-sm text-center border-green-500/50">
+                <h3 class="text-green-500 font-bold mb-4 tracking-widest">瑞瓦 · 邻里共鸣</h3>
                 <div class="flex justify-between items-center bg-white/5 p-4 rounded-xl mb-4">
-                    <span class="text-sm text-white">🛠️ 冲击钻 (王阿姨)</span>
+                    <div class="text-left">
+                        <span class="text-sm text-white block font-bold">🛠️ 冲击钻</span>
+                        <span class="text-[10px] text-gray-500">持有者：王阿姨 (302室)</span>
+                    </div>
                     <button onclick="startChat('王阿姨', '冲击钻')" class="bg-green-500 text-black text-xs font-bold px-4 py-2 rounded-lg">发起借用</button>
                 </div>
-                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 text-[10px] uppercase">返回</button>
+                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-500 text-[10px] uppercase mt-2">返回主页</button>
             </div>
         `;
         document.body.appendChild(overlay);
     }
 
     function startChat(neighbor, item) {
-        document.getElementById('resource-overlay').remove();
+        const overlay = document.getElementById('resource-overlay');
+        if(overlay) overlay.remove();
         const chatRoom = document.getElementById('chat-room');
         const chatBox = document.getElementById('chat-box');
         document.getElementById('chat-title').innerText = neighbor;
         chatRoom.classList.remove('hidden');
         chatBox.innerHTML = "";
 
-        addMessage('me', `你好，我想借用一下你的${item}，可以吗？`);
-        speak("正在发送申请。");
+        addMessage('me', `您好，我在瑞瓦平台上看到您分享了${item}，我想借用一下可以吗？`);
+        speak("申请已发送。");
 
         setTimeout(() => {
-            addMessage('neighbor', `噢！是搞能量共鸣的邻居呀。可以的，我现在正好不用。`);
-            speak(`${neighbor}说可以借给你哦！`);
+            addMessage('neighbor', `你好呀！我是王阿姨。当然可以，这个工具闲着也是闲着，你拿去用吧。`);
+            speak(`${neighbor}同意了您的请求。`);
             setTimeout(() => {
-                addMessage('neighbor', `我就在三零二室，你现在过来拿吧，我给你放在门口啦。`);
-                speak("好耶！王阿姨让你现在去三零二室取件，记得要有礼貌哦！");
+                addMessage('neighbor', `我就在三零二室，我现在放在门口了，你随时过来拿就行。`);
+                speak("共鸣达成！王阿姨已将物品备好在302室门口。");
             }, 2500);
         }, 2000);
     }
@@ -169,16 +191,23 @@
 
     window.addEventListener('load', () => {
         setTimeout(() => {
-            document.getElementById('splash').style.opacity = '0';
-            setTimeout(() => { document.getElementById('splash').style.display = 'none'; document.getElementById('activate-btn').style.display = 'flex'; }, 800);
-        }, 1500);
+            const splash = document.getElementById('splash');
+            splash.style.opacity = '0';
+            setTimeout(() => { 
+                splash.style.display = 'none'; 
+                document.getElementById('activate-btn').style.display = 'flex'; 
+            }, 800);
+        }, 2000);
     });
 
     setInterval(() => {
         const el = document.getElementById('power-val');
-        if(el) el.innerText = (parseInt(el.innerText) + Math.floor(Math.random()*11-5));
+        if(el) {
+            let current = parseInt(el.innerText);
+            el.innerText = current + Math.floor(Math.random()*11-5);
+        }
         const ers = document.getElementById('ers-val');
-        ers.innerText = (parseFloat(ers.innerText) + 0.01).toFixed(2);
+        if(ers) ers.innerText = (parseFloat(ers.innerText) + 0.001).toFixed(3);
     }, 2000);
     </script>
 </body>
